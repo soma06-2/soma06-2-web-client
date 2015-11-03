@@ -1,0 +1,68 @@
+
+@import '../variables.css';
+
+.SummaryPage {
+  .AllReviews {
+    margin: 0; padding: 0;
+    display: block;
+
+    > li {
+      display: block;
+      margin: 10px 0; padding: 8px;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .repReviews {
+    margin: 0; padding: 0;
+    display: block;
+
+    > li {
+      display: block;
+      margin: 10px 0; padding: 0;
+      font-size: 0.8em;
+    }
+  }
+
+  .fixed {
+    position: fixed;
+    top: 60px;
+  }
+
+  p.Review {
+    color: #444;
+    line-height: 1.5;
+  }
+
+  em {
+    font-style: normal;
+
+    &.neg {
+      background: rgba(255, 100, 100, 0.6);
+    }
+
+    &.pos {
+      background: rgba(100, 100, 255, 0.6);
+    }
+  }
+
+  svg {
+  	width: 100%;
+  	height: 450px;
+  }
+
+  path {
+    transition: 0.25s;
+  }
+
+  path.slice {
+  	stroke-width: 0px;
+  }
+
+  polyline {
+  	opacity: .3;
+  	stroke: black;
+  	stroke-width: 2px;
+  	fill: none;
+  }
+}

@@ -1,19 +1,29 @@
-@import '../../../node_modules/normalize.css/normalize.css';
-
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
+@import 'bootstrap';
+@import '../../../node_modules/spinkit/css/spinkit.css';
 @import '../variables.css';
 
+.noPadding {
+  margin: 0;
+  
+  > div {
+    padding: 0;
+  }
+}
+
+label {
+  font-weight: 400;
+}
 /*
  * Base styles
  * ========================================================================== */
 
-html {
+body {
   color: #222;
   font-weight: 100;
-  font-size: 1em; /* ~16px; */
+  font-size: 1.6em; /* ~16px; */
   font-family: var(--font-family-base);
   line-height: 1.375; /* ~22px */
+  position: relative;
 }
 
 /*
@@ -165,4 +175,10 @@ textarea {
   h3 {
     page-break-after: avoid;
   }
+}
+
+.wrap {
+  margin: 0 auto;
+  width: var(--max-content-width);
+  max-width: 1400px;
 }

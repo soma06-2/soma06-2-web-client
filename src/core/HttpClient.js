@@ -27,7 +27,7 @@ const HttpClient = {
             reject(err);
           }
         } else {
-          resolve(res.body);
+          resolve(JSON.parse(res.text));
         }
       });
   }),

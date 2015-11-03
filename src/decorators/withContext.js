@@ -12,6 +12,8 @@ function withContext(ComposedComponent) {
         onSetTitle: PropTypes.func,
         onSetMeta: PropTypes.func,
         onPageNotFound: PropTypes.func,
+        params: PropTypes.object,
+        query: PropTypes.object,
       }),
     };
 
@@ -20,6 +22,8 @@ function withContext(ComposedComponent) {
       onSetTitle: PropTypes.func.isRequired,
       onSetMeta: PropTypes.func.isRequired,
       onPageNotFound: PropTypes.func.isRequired,
+      params: PropTypes.object.isRequired,
+      query: PropTypes.object.isRequired,
     };
 
     getChildContext() {
@@ -29,6 +33,8 @@ function withContext(ComposedComponent) {
         onSetTitle: context.onSetTitle || emptyFunction,
         onSetMeta: context.onSetMeta || emptyFunction,
         onPageNotFound: context.onPageNotFound || emptyFunction,
+        params: context.params || {},
+        query: context.query || {},
       };
     }
 

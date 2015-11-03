@@ -80,10 +80,10 @@ const config = {
         test: /\.txt$/,
         loader: 'raw-loader',
       }, {
-        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
-        loader: 'url-loader?limit=10000',
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+        loader: 'url-loader',
       }, {
-        test: /\.(eot|ttf|wav|mp3)$/,
+        test: /\.(wav|mp3)$/,
         loader: 'file-loader',
       },
     ],
@@ -91,7 +91,13 @@ const config = {
 
   postcss: function plugins(bundler) {
     return [
-      require('postcss-import')({ addDependencyTo: bundler }),
+      require('postcss-import')({
+        addDependencyTo: bundler,
+        onImport: files => files.forEach(this.addDependency),
+      }),
+      require('postcss-url')({
+        copy: 'rebase',
+      }),
       require('postcss-nested')(),
       require('postcss-cssnext')({ autoprefixer: AUTOPREFIXER_BROWSERS }),
     ];
@@ -159,7 +165,7 @@ const appConfig = merge({}, config, {
       ...config.module.loaders,
       {
         test: /\.css$/,
-        loader: 'style-loader/useable!css-loader!postcss-loader',
+        loader: 'style-loader/useable!css-loader?minimize&sourceMap&importLoaders=1!postcss-loader',
       },
     ],
   },
@@ -207,7 +213,7 @@ const serverConfig = merge({}, config, {
       ...config.module.loaders,
       {
         test: /\.css$/,
-        loader: 'css-loader!postcss-loader',
+        loader: 'css-loader?minimize&discardComments!postcss-loader',
       },
     ],
   },

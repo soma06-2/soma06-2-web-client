@@ -1,6 +1,6 @@
-/* React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
 :root {
+  --animation: all .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;
 
   /*
    * Colors
@@ -17,13 +17,13 @@
    * Typography
    * ======================================================================== */
 
-  --font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;
+  --font-family-base:      'NanumGothic', 'Segoe UI', 'HelveticaNeue-Light', sans-serif;
 
   /*
    * Layout
    * ======================================================================== */
 
-  --max-content-width:     1000px;
+  --max-content-width:     66.6%;
 
   /*
    * Media queries breakpoints

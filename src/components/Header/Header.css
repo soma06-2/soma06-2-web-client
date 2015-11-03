@@ -6,47 +6,202 @@
   --brand-color: #61dafb;
 }
 
+body {
+  margin-top: 70px;
+}
+
 .Header {
+  z-index: 10000;
+  position: fixed;
+  top: 0; left: 0; right: 0;
   background: #373277;
-  color: #fff;
-}
+  color: rgba(255, 255, 255, 0.8);
+  height: 64px;
+  transition: var(--animation);
+  box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28);
 
-.Header-container {
-  margin: 0 auto;
-  padding: 20px 0;
-  max-width: var(--max-content-width);
-}
+  &.activated {
+    background: #eee;
+    color: #000;
 
-.Header-brand {
-  color: color(var(--brand-color) lightness(+10%));
-  text-decoration: none;
-  font-size: 1.75em; /* ~28px */
-}
+    .animation {
+      background-color: #000;
+    }
 
-.Header-brandTxt {
-  margin-left: 10px;
-}
+    .glyphicon {
+      color: #000;
+    }
 
-.Header-nav {
-  float: right;
-  margin-top: 6px;
-}
+    input {
+      &::-webkit-input-placeholder {
+        color: rgba(0, 0, 0, 0.6);
+      }
 
-.Header-banner {
-  text-align: center;
-}
+      &:-moz-placeholder {
+        color: #222;
+        opacity:  1;
+      }
 
-.Header-bannerTitle {
-  margin: 0;
-  padding: 10px;
-  font-weight: normal;
-  font-size: 4em;
-  line-height: 1em;
-}
+      &::-moz-placeholder {
+        color: rgba(0, 0, 0, 0.6);
+        opacity:  1;
+      }
 
-.Header-bannerDesc {
-  padding: 0;
-  color: rgba(255, 255, 255, .5);
-  font-size: 1.25em;
-  margin: 0;
+      &:-ms-input-placeholder {
+        color: #222;
+      }
+    }
+  }
+
+  &-wrap {
+    margin: 0 auto;
+    width: var(--max-content-width);
+  }
+
+  &-search {
+    margin: 0; padding: 10px 0;
+    flex: 1;
+    display: flex;
+    box-sizing: border-box;
+    will-change: top,left;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    transition: var(--animation);
+
+    &.activated,
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .activated & {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    &-init {
+      display: inline-block;
+      position: relative;
+      width: 36px;
+      opacity: 0;
+      transition: var(--animation);
+      cursor: pointer;
+
+      .glyphicon {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 18px; height: 18px;
+        margin: -9px;
+        display: block;
+        font-size: 18px;
+        line-height: 18px;
+      }
+
+      &.activated {
+        opacity: 1;
+      }
+    }
+
+    label {
+      margin: 0; padding: 0;
+      display: inline-block;
+      position: relative;
+      width: 72px;
+      color: #fff;
+
+      > div {
+        position: absolute;
+        top: 50%; left: 50%;
+        margin: -12px;
+        width: 24px; height: 24px;
+        opacity: 0;
+        transition: var(--animation);
+        transform: translate(0, 0, 0) rotate(0) scale(0.5);
+
+        &.activated {
+          opacity: 1;
+          transform: translate(0, 0, 0) rotate(360deg) scale(1);
+        }
+      }
+
+      .glyphicon {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 24px; height: 24px;
+        margin: -12px;
+        display: block;
+        font-size: 24px;
+        line-height: 24px;
+        color: inherit;
+      }
+
+      .animation {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 28px; height: 28px;
+        margin: -14px;
+        display: block;
+        background-color: #fff;
+      }
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: 0;
+
+      &::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      &:-moz-placeholder {
+        color: #ddd;
+        opacity:  1;
+      }
+
+      &::-moz-placeholder {
+        color: rgba(255, 255, 255, 0.6);
+        opacity:  1;
+      }
+
+      &:-ms-input-placeholder {
+        color: #ddd;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  & &-brand {
+    margin: 0;
+    padding: 0 20px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 1.6em; /* ~28px */
+    line-height: 1.8em;
+    outline: none;
+    min-width: 200px;
+    display: block;
+
+    &:active,
+    &:hover {
+      outline: none;
+      text-decoration: none;
+    }
+  }
+
+  &-container {
+    margin: 0 auto;
+    padding: 10px 0;
+    overflow: hidden;
+    display: flex;
+    box-sizing: border-box;
+  }
+
+  &-nav {
+    padding: 0 20px;
+    display: block;
+    text-align: right;
+    min-width: 200px;
+  }
 }

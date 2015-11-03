@@ -17,6 +17,8 @@ server.use(express.static(path.join(__dirname, 'public')));
 // Register API middleware
 // -----------------------------------------------------------------------------
 server.use('/api/content', require('./api/content'));
+server.use('/v1/naverProducts/:word', require('./api/NaverProduct'));
+server.use('/v1/dummy', require('./api/dummy'));
 
 //
 // Register server-side rendering middleware
@@ -33,7 +35,7 @@ server.get('*', async (req, res, next) => {
       onPageNotFound: () => statusCode = 404,
     };
 
-    await Router.dispatch({ path: req.path, context }, (state, component) => {
+    await Router.dispatch({ path: req.path, query: req.query, context }, (state, component) => {
       data.body = ReactDOM.renderToString(component);
       data.css = css.join('');
     });
