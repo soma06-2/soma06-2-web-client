@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import styles from './HomePage.css';
 import withStyles from '../../decorators/withStyles';
 import d3 from 'd3';
-import $ from 'jquery';
 import { Button, Grid, Row, Col } from 'react-bootstrap';
 
 class HomePage extends Component {
