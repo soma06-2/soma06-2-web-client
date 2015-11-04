@@ -1,6 +1,7 @@
 
 :root {
   --animation: all .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;
+  --animation-time: .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;
 
   /*
    * Colors

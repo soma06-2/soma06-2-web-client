@@ -32,15 +32,14 @@ export default class ReviewScroll extends Component {
     let bottom = selfNode.offsetHeight + selfNode.offsetTop;
     let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    this.isOver = top - windowHeight > selfNode.offsetTop;
-    this.forceUpdate();
+    this.isOver = top - windowHeight > this.refs.reviewList.offsetTop;
 
-    if (bottom - top - windowHeight > 500) {
-      return;
-    }
+    console.log(this.refs.reviewList.offsetTop);
 
-    for (let idx = 0; idx < 50; idx++) {
-      this.state.reviews.push("something");
+    if (bottom - top - windowHeight < 500) {
+      for (let idx = 0; idx < 50; idx++) {
+        this.state.reviews.push("something");
+      }
     }
 
     this.forceUpdate();
@@ -65,7 +64,7 @@ export default class ReviewScroll extends Component {
 
   renderReviews() {
     return (
-      <ul className="AllReviews">
+      <ul className="AllReviews" ref="reviewList">
         {this.state.reviews.map((review, idx) => {
           return (
             <li key={idx}>
@@ -94,18 +93,27 @@ export default class ReviewScroll extends Component {
     ];
 
     return (
-      <div>
-        <div className="wrap">
-          <Toolbar className={classNames({
-              fixed: this.isOver,
+      <div
+        style={{
+          marginTop: '20px',
+        }}>
+        <div
+          className={classNames({
+            fixed: this.isOver,
+          })}>
+          <div
+            className={classNames({
+              wrap: this.isOver,
             })}>
-            <ToolbarGroup>
-              <DropDownMenu menuItems={filterOptions} />
-            </ToolbarGroup>
-            <ToolbarGroup>
-              <DropDownMenu menuItems={iconMenuItems} />
-            </ToolbarGroup>
-          </Toolbar>
+            <Toolbar>
+              <ToolbarGroup>
+                <DropDownMenu menuItems={filterOptions} />
+              </ToolbarGroup>
+              <ToolbarGroup>
+                <DropDownMenu menuItems={iconMenuItems} />
+              </ToolbarGroup>
+            </Toolbar>
+          </div>
         </div>
         {this.renderReviews()}
       </div>

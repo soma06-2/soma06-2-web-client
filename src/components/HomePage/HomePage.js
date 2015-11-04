@@ -4,20 +4,9 @@ import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './HomePage.css';
 import withStyles from '../../decorators/withStyles';
-import d3 from 'd3';
-import { Button, Grid, Row, Col } from 'react-bootstrap';
+// import Button from 'react-toolbox/lib/button';
 
 class HomePage extends Component {
-
-  componentDidMount() {
-    var d = d3
-      .select(ReactDOM.findDOMNode(this))
-      .append('svg')
-      .attr({
-        width: 400,
-        height: 400,
-      });
-  }
 
   render() {
     return (

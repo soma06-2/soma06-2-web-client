@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import withStyles from '../../decorators/withStyles';
 import styles from './SummaryPage.css';
-import d3 from 'd3';
 import { Row, Col } from 'react-bootstrap';
 import ReviewScroll from './ReviewScroll';
 import classNames from 'classnames';
@@ -31,6 +30,9 @@ class SummaryPage extends Component {
 
     this.props.data.attributes.forEach((attr, idx) => {
       this.props.data.attributes[idx].name = attr.name.split('/')[0];
+
+      attr.negative.reviews = attr.negative.reviews.splice(0, 5);
+      attr.positive.reviews = attr.positive.reviews.splice(0, 5);
     });
   }
 
@@ -44,7 +46,12 @@ class SummaryPage extends Component {
       return;
     }
 
-    this.mouse = event;
+    const selfNode = ReactDOM.findDOMNode(this);
+
+    this.mouse = {
+      offsetX: event.clientX - selfNode.offsetLeft,
+      offsetY: event.clientY - selfNode.offsetTop,
+    };
     this.forceUpdate();
   }
 
@@ -54,10 +61,18 @@ class SummaryPage extends Component {
         return;
       }
 
-      this.state.activatedSector = idx;
       this.forceUpdate();
 
-      this.mouse = event;
+      this.state.activatedSector = idx;
+
+      const selfNode = ReactDOM.findDOMNode(this);
+
+      this.mouse = {
+        offsetX: event.clientX - selfNode.offsetLeft,
+        offsetY: event.clientY - selfNode.offsetTop,
+      };
+
+      this.forceUpdate();
     }
   }
 
@@ -67,9 +82,9 @@ class SummaryPage extends Component {
         return;
       }
 
-      this.forceUpdate();
-
       this.mouse = null;
+
+      this.forceUpdate();
     }
   }
 
@@ -88,15 +103,15 @@ class SummaryPage extends Component {
 
     const attr = this.getActivatedSector();
 
-    if (!attr) {
+    if (!attr || !this.mouse) {
       return '';
     }
 
     return (
       <div style={{
           position: 'absolute',
-          top: event.offsetY + 40,
-          left: event.offsetX + 70,
+          top: (this.mouse.offsetY + 20) + 'px',
+          left: (this.mouse.offsetX + 20) + 'px',
           width: '100px',
           height: '15px',
           background: '#F44336',
@@ -165,8 +180,11 @@ class SummaryPage extends Component {
 
               radAngle -= valuePercentage * mPI;
               const radAngle2 = valuePercentage / 2 * mPI;
-              const hX = cx + cos(radAngle + radAngle2) * (radius + 40);
-              const hY = cy + sin(radAngle + radAngle2) * (radius + 40);
+              const tx = radAngle + radAngle2;
+              const hX = cos(tx) * (radius + 40);
+              const hY = sin(tx) * (radius + 40);
+              const pX = cos(tx) * (radius - 40);
+              const pY = sin(tx) * (radius - 40);
 
               const d = [
                 `M ${0},${0}`,
@@ -181,20 +199,24 @@ class SummaryPage extends Component {
               lastX = nextX;
               lastY = nextY;
 
-              const scale = this.state.activatedSector === idx ? 1.1 : 1;
+              const scale = (this.state.activatedSector === idx ? 1.1 : 1);
               const transform = `translate(${cx}px,${cy}px) scale(${scale})`;
 
               return (
-                <g key={idx}>
+                <g
+                  key={idx}
+                  classNames={classNames({
+                    activated: this.state.activatedSector === idx,
+                  })}
+                  style={{
+                    transform: transform,
+                  }}
+                  onMouseEnter={this.handleMouseEnter(idx).bind(this)}
+                  onMouseLeave={this.handleMouseLeave(idx).bind(this)}
+                  onMouseMove={this.handleMouseMove.bind(this)}>
                   <path
                     d={d}
                     fill={this.state.activatedSector === idx ? accentChartColors[idx % chartColors.length] : chartColors[idx % chartColors.length]}
-                    style={{
-                      transform: transform,
-                    }}
-                    onMouseEnter={this.handleMouseEnter(idx).bind(this)}
-                    onMouseLeave={this.handleMouseLeave(idx).bind(this)}
-                    onMouseMove={this.handleMouseMove.bind(this)}
                     />
                   <text
                     textAnchor="middle"
@@ -202,6 +224,15 @@ class SummaryPage extends Component {
                     x={hX}
                     y={hY}>
                     <tspan>{attr.name}</tspan>
+                  </text>
+                  <text
+                    textAnchor="middle"
+                    alignmentBaseline="middle"
+                    x={pX}
+                    y={pY}
+                    fill="#fff"
+                    fontSize={this.state.activatedSector === idx ? '14' : '10'}>
+                    <tspan>{(valuePercentage * 100).toFixed(1)}</tspan>
                   </text>
                 </g>
               );
@@ -252,20 +283,31 @@ class SummaryPage extends Component {
       <div>
         <h1
           style={{
-            color: '#2979FF',
             fontSize: '1.5em',
+            margin: '10px 0',
+            padding: '0px',
+            color: '#004D40',
           }}>
           긍정 의견
         </h1>
+        {list.length === 0 ? '추출된 긍정 의견이 없습니다.' : ''}
         <ul className="repReviews">
           {list.map((item, idx) => {
             return (
               <li
                 key={idx}
                 style={{
-                  color: '#42A5F5',
-                }}>
-                {item}
+                  margin: '1px 0px',
+                  backgroundColor: '#00BFA5',
+                  borderRadius: '1px',
+                  boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
+                  color: '#fff',
+                  padding: '10px',
+                }}
+                className="card">
+                <span style={{
+                  display: 'inline-block',
+                }}>{item}</span>
               </li>
             );
           })}
@@ -287,21 +329,28 @@ class SummaryPage extends Component {
       <div>
         <h1
           style={{
-            color: '#FF1744',
-            textAlign: 'right',
+            color: '#311B92',
             fontSize: '1.5em',
+            margin: '10px 0',
+            padding: '0px',
           }}>
           부정 의견
         </h1>
+        {list.length === 0 ? '추출된 부정 의견이 없습니다.' : ''}
         <ul className="repReviews">
           {list.map((item, idx) => {
             return (
               <li
                 key={idx}
                 style={{
-                  textAlign: 'right',
-                  color: '#FF4081',
-                }}>
+                  margin: '1px 0px',
+                  backgroundColor: '#B388FF',
+                  borderRadius: '1px',
+                  boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
+                  color: '#fff',
+                  padding: '10px',
+                }}
+                className="card">
                 {item}
               </li>
             );
