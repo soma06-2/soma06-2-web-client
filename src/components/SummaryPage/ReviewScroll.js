@@ -4,8 +4,27 @@ import withStyles from '../../decorators/withStyles';
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import { Toolbar, ToolbarGroup, DropDownMenu, Slider } from 'material-ui';
 import classNames from 'classnames';
+import http from '../../core/HttpClient';
+
+const statTags = {
+  '<em class="pos">': /<stat-pos>/g,
+  '<em class="neg">': /<stat-neg>/g,
+  '</em>': /(<\/stat-pos>|<\/stat-neg>)/g,
+};
+
+function translateStat(content) {
+  for (let i in statTags) {
+    content = content.replace(statTags[i], i);
+  }
+
+  return content;
+}
 
 export default class ReviewScroll extends Component {
+  static propTypes = {
+    productId: PropTypes.string.isRequired,
+  };
+
   constructor() {
     super();
 
@@ -15,10 +34,24 @@ export default class ReviewScroll extends Component {
 
     this.eventHolder = null;
     this.isOver = false;
+    this.skip = 0;
+    this.limit = 10;
+  }
 
-    for (let idx = 0; idx < 50; idx++) {
-      this.state.reviews.push("something");
-    }
+  loadProducts() {
+    http
+      .find(`products/${this.props.productId}/reviews?skip=${this.skip}&limit=${this.limit}`)
+      .then(res => {
+        this.skip += this.limit;
+
+        res.forEach(review => {
+          review.content = translateStat(review.content);
+          this.state.reviews.push(review.content);
+        });
+      })
+      .catch(error => {
+        console.error();
+      });
   }
 
   handleScroll(event) {
@@ -34,18 +67,16 @@ export default class ReviewScroll extends Component {
 
     this.isOver = top - windowHeight > this.refs.reviewList.offsetTop;
 
-    console.log(this.refs.reviewList.offsetTop);
-
     if (bottom - top - windowHeight < 500) {
-      for (let idx = 0; idx < 50; idx++) {
-        this.state.reviews.push("something");
-      }
+      this.loadProducts();
     }
 
     this.forceUpdate();
   }
 
   componentWillMount() {
+    this.loadProducts();
+
     if (!canUseDOM) {
       return;
     }
@@ -68,7 +99,7 @@ export default class ReviewScroll extends Component {
         {this.state.reviews.map((review, idx) => {
           return (
             <li key={idx}>
-              {review}
+              <p dangerouslySetInnerHTML={{__html: review}}></p>
             </li>
           );
         })}

@@ -17,8 +17,8 @@ class ErrorPage extends Component {
     this.context.onSetTitle(title);
     return (
       <div>
-        <h1>{title}</h1>
-        <p>Sorry, an critical error occurred on this page.</p>
+        <h1>이런!</h1>
+        <p>해당 상품에 대해서 분석이 불가능합니다.</p>
       </div>
     );
   }

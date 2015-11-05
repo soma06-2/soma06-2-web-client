@@ -50,7 +50,7 @@ const router = new Router(on => {
 
   use('/summary/product/:productId', async (state) => {
     try {
-      const content = await http.get(`http://1.lucent.me:5000/v1/products/${state.params.productId}/summary`);
+      const content = await http.find(`products/${state.params.productId}/summary`);
       return content && <SummaryPage data={content} />;
     }
     catch (e) {

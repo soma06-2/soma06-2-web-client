@@ -4,7 +4,7 @@
 @keyframes card {
   from {
     opacity: 0;
-    transform: translateX(-100px) scale(2);
+    transform: translateX(-10px) scale(1.2);
   }
   to {
     opacity: 1;
@@ -17,10 +17,28 @@
     margin: 0; padding: 0;
     display: block;
 
-    > li {
+    li {
       display: block;
       margin: 2px 0; padding: 16px;
       box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+      font-size: 0.9em;
+
+      p {
+        margin: 0; padding: 0;
+        line-height: 1.75;
+
+        em {
+          font-style: normal;
+
+          &.neg {
+            background: rgba(255, 100, 100, 0.6);
+          }
+
+          &.pos {
+            background: rgba(100, 100, 255, 0.6);
+          }
+        }
+      }
     }
   }
 
@@ -28,7 +46,7 @@
     margin: 0; padding: 0;
     display: block;
 
-    > li {
+    li {
       display: block;
       margin: 10px 0; padding: 0;
       font-size: 0.8em;
@@ -50,18 +68,6 @@
   p.Review {
     color: #444;
     line-height: 1.5;
-  }
-
-  em {
-    font-style: normal;
-
-    &.neg {
-      background: rgba(255, 100, 100, 0.6);
-    }
-
-    &.pos {
-      background: rgba(100, 100, 255, 0.6);
-    }
   }
 
   svg {

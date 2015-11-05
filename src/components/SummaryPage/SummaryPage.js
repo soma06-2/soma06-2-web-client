@@ -16,6 +16,7 @@ class SummaryPage extends Component {
 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
+    params: PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
@@ -213,7 +214,8 @@ class SummaryPage extends Component {
                   }}
                   onMouseEnter={this.handleMouseEnter(idx).bind(this)}
                   onMouseLeave={this.handleMouseLeave(idx).bind(this)}
-                  onMouseMove={this.handleMouseMove.bind(this)}>
+                  onMouseMove={this.handleMouseMove.bind(this)}
+                  ref="chartPie">
                   <path
                     d={d}
                     fill={this.state.activatedSector === idx ? accentChartColors[idx % chartColors.length] : chartColors[idx % chartColors.length]}
@@ -222,7 +224,8 @@ class SummaryPage extends Component {
                     textAnchor="middle"
                     alignmentBaseline="middle"
                     x={hX}
-                    y={hY}>
+                    y={hY}
+                    fill={this.state.activatedSector === idx ? '#000' : '#777'}>
                     <tspan>{attr.name}</tspan>
                   </text>
                   <text
@@ -291,27 +294,28 @@ class SummaryPage extends Component {
           긍정 의견
         </h1>
         {list.length === 0 ? '추출된 긍정 의견이 없습니다.' : ''}
-        <ul className="repReviews">
-          {list.map((item, idx) => {
-            return (
-              <li
-                key={idx}
-                style={{
-                  margin: '1px 0px',
-                  backgroundColor: '#00BFA5',
-                  borderRadius: '1px',
-                  boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
-                  color: '#fff',
-                  padding: '10px',
-                }}
-                className="card">
-                <span style={{
-                  display: 'inline-block',
-                }}>{item}</span>
-              </li>
-            );
-          })}
-        </ul>
+          <ul className="repReviews">
+            {list.map((item, idx) => {
+              return (
+                <li
+                  key={idx}
+                  ref="repReview"
+                  style={{
+                    margin: '1px 0px',
+                    backgroundColor: '#00BFA5',
+                    borderRadius: '1px',
+                    boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
+                    color: '#fff',
+                    padding: '10px',
+                  }}
+                  className="card">
+                  <span style={{
+                    display: 'inline-block',
+                  }}>{item}</span>
+                </li>
+              );
+            })}
+          </ul>
       </div>
     );
   }
@@ -342,6 +346,7 @@ class SummaryPage extends Component {
             return (
               <li
                 key={idx}
+                ref="repReview"
                 style={{
                   margin: '1px 0px',
                   backgroundColor: '#B388FF',
@@ -357,6 +362,12 @@ class SummaryPage extends Component {
           })}
         </ul>
       </div>
+    );
+  }
+
+  renderProductStat() {
+    return (
+      <h3>전체 긍정/부정 비율</h3>
     );
   }
 
@@ -380,11 +391,12 @@ class SummaryPage extends Component {
           </Col>
           <Col xs={4}>
             {this.renderProduct()}
+            {this.renderProductStat()}
           </Col>
         </Row>
         <Row>
           <Col xs={12}>
-            <ReviewScroll />
+            <ReviewScroll productId={this.context.params.productId} />
           </Col>
         </Row>
       </div>
