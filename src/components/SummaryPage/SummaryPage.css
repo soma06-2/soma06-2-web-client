@@ -25,17 +25,31 @@
 
       p {
         margin: 0; padding: 0;
-        line-height: 1.75;
+        line-height: 2;
 
         em {
           font-style: normal;
+          border-radius: 1px;
+          margin: 2px 3px;
+          padding: 2px 4px;
+          font-size: 0.9em;
+          color: #fff;
+          box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+          display: inline-block;
+          line-height: 1.5;
+          transition: var(--animation);
 
           &.neg {
-            background: rgba(255, 100, 100, 0.6);
+            background: #B388FF;
           }
 
           &.pos {
-            background: rgba(100, 100, 255, 0.6);
+            background: #00BFA5;
+          }
+
+          &:hover {
+            transform: scale(1.5);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
           }
         }
       }
@@ -63,6 +77,13 @@
     top: 60px;
     left: 0;
     right: 0;
+    transition: var(--animation);
+
+    & > div {
+      & > div {
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+      }
+    }
   }
 
   p.Review {

@@ -23,6 +23,7 @@ function translateStat(content) {
 export default class ReviewScroll extends Component {
   static propTypes = {
     productId: PropTypes.string.isRequired,
+    attrFilter: PropTypes.array.isRequired,
   };
 
   constructor() {
@@ -42,12 +43,15 @@ export default class ReviewScroll extends Component {
     http
       .find(`products/${this.props.productId}/reviews?skip=${this.skip}&limit=${this.limit}`)
       .then(res => {
+        console.log(res);
         this.skip += this.limit;
 
         res.forEach(review => {
           review.content = translateStat(review.content);
           this.state.reviews.push(review.content);
         });
+
+        this.forceUpdate();
       })
       .catch(error => {
         console.error();
@@ -65,9 +69,9 @@ export default class ReviewScroll extends Component {
     let bottom = selfNode.offsetHeight + selfNode.offsetTop;
     let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    this.isOver = top - windowHeight > this.refs.reviewList.offsetTop;
+    this.isOver = top - windowHeight > this.refs.reviewList.offsetTop - 56;
 
-    if (bottom - top - windowHeight < 500) {
+    if (bottom - top - windowHeight < 200) {
       this.loadProducts();
     }
 
@@ -75,6 +79,7 @@ export default class ReviewScroll extends Component {
   }
 
   componentWillMount() {
+
     this.loadProducts();
 
     if (!canUseDOM) {
@@ -128,6 +133,9 @@ export default class ReviewScroll extends Component {
         style={{
           marginTop: '20px',
         }}>
+        <div style={this.isOver ? {
+            height: '56px',
+          } : {}} />
         <div
           className={classNames({
             fixed: this.isOver,
@@ -138,7 +146,7 @@ export default class ReviewScroll extends Component {
             })}>
             <Toolbar>
               <ToolbarGroup>
-                <DropDownMenu menuItems={filterOptions} />
+                <DropDownMenu menuItems={this.props.attrFilter} />
               </ToolbarGroup>
               <ToolbarGroup>
                 <DropDownMenu menuItems={iconMenuItems} />

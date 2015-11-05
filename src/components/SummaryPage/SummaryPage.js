@@ -375,6 +375,15 @@ class SummaryPage extends Component {
     const title = `상품 요약`;
     this.context.onSetTitle(title);
 
+    const attrFilter = [];
+
+    this.props.data.attributes.forEach((attr, idx) => {
+      attrFilter.push({
+        payload: idx,
+        text: `${attr.name} (${attr.totalReviews})`,
+      });
+    });
+
     return (
       <div className="wrap SummaryPage">
         <Row>
@@ -396,7 +405,9 @@ class SummaryPage extends Component {
         </Row>
         <Row>
           <Col xs={12}>
-            <ReviewScroll productId={this.context.params.productId} />
+            <ReviewScroll
+              attrFilter={attrFilter}
+              productId={this.context.params.productId} />
           </Col>
         </Row>
       </div>
