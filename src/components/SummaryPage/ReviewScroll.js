@@ -36,15 +36,22 @@ export default class ReviewScroll extends Component {
     this.eventHolder = null;
     this.isOver = false;
     this.skip = 0;
-    this.limit = 10;
+    this.limit = 20;
   }
 
   loadProducts() {
+    const condition = {
+      attributes: [],
+    };
+
     http
-      .find(`products/${this.props.productId}/reviews?skip=${this.skip}&limit=${this.limit}`)
+      .find(`products/${this.props.productId}/reviews?skip=${this.skip}&limit=${this.limit}&where=${JSON.stringify(condition)}`)
       .then(res => {
         console.log(res);
-        this.skip += this.limit;
+
+        if (Array.isArray(res) && res.length) {
+          this.skip += this.limit;
+        }
 
         res.forEach(review => {
           review.content = translateStat(review.content);

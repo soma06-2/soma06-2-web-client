@@ -169,6 +169,13 @@ class SummaryPage extends Component {
         }}
         >
         <svg width={width} height={height}>
+          <defs>
+            <filter id="f2" x="0" y="0" width="200%" height="200%">
+              <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
+              <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+              <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+            </filter>
+          </defs>
           <g>
             <circle cx={cx} cy={cy} r={radius} fill="#eee" />
             {this.props.data.attributes.map((attr, idx) => {
@@ -218,6 +225,7 @@ class SummaryPage extends Component {
                   ref="chartPie">
                   <path
                     d={d}
+                    filter="url(#f2)"
                     fill={this.state.activatedSector === idx ? accentChartColors[idx % chartColors.length] : chartColors[idx % chartColors.length]}
                     />
                   <text
@@ -255,7 +263,7 @@ class SummaryPage extends Component {
     }
 
     return (
-      <div style={{boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)', margin: '10px 0', padding: '15px', overflow: 'hidden'}}>
+      <div style={{boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)', margin: '10px 0', padding: '15px', overflow: 'hidden'}}>
         <div
           style={{
             margin: '-15px',
@@ -304,7 +312,7 @@ class SummaryPage extends Component {
                     margin: '1px 0px',
                     backgroundColor: '#00BFA5',
                     borderRadius: '1px',
-                    boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
+                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
                     color: '#fff',
                     padding: '10px',
                   }}
@@ -389,7 +397,11 @@ class SummaryPage extends Component {
         <Row>
           <Col xs={8}>
             {this.renderGraph()}
-            <Row>
+            <Row
+              style={{
+                height: '250px',
+                overflow: 'hidden',
+              }}>
               <Col xs={6}>
                 {this.renderPositive()}
               </Col>

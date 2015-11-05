@@ -1,10 +1,19 @@
 
 @import '../variables.css';
 
+@keyframes pie {
+  from {
+    transfrom: scale(0);
+  }
+  to {
+    transfrom: scale(1);
+  }
+}
+
 @keyframes card {
   from {
     opacity: 0;
-    transform: translateX(-10px) scale(1.2);
+    transform: translateX(-10px) scale(0.4);
   }
   to {
     opacity: 1;
@@ -21,23 +30,24 @@
       display: block;
       margin: 2px 0; padding: 16px;
       box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-      font-size: 0.9em;
+      font-size: 0.8em;
 
       p {
         margin: 0; padding: 0;
-        line-height: 2;
+        line-height: 1.5;
 
         em {
           font-style: normal;
           border-radius: 1px;
-          margin: 2px 3px;
           padding: 2px 4px;
           font-size: 0.9em;
           color: #fff;
-          box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
           display: inline-block;
           line-height: 1.5;
           transition: var(--animation);
+          z-index: 1;
+          position: relative;
 
           &.neg {
             background: #B388FF;
@@ -48,8 +58,9 @@
           }
 
           &:hover {
-            transform: scale(1.5);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transform: scale(1.25);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
           }
         }
       }
@@ -74,14 +85,15 @@
 
   .fixed {
     position: fixed;
-    top: 60px;
+    top: 64px;
     left: 0;
     right: 0;
     transition: var(--animation);
+    z-index: 10000;
 
     & > div {
       & > div {
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 3px 4px rgba(0, 0, 0, 0.3);
       }
     }
   }
@@ -110,14 +122,5 @@
   	stroke: black;
   	stroke-width: 2px;
   	fill: none;
-  }
-
-  @keyframes pie {
-    from {
-      transfrom: scale(0);
-    }
-    to {
-      transfrom: scale(1);
-    }
   }
 }
