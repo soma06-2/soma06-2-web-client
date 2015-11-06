@@ -38,6 +38,27 @@ class SummaryPage extends Component {
     });
   }
 
+  componentWillMount() {
+    if (!canUseDOM) {
+      return;
+    }
+
+    this.worker = setInterval(() => {
+      this.animate();
+    }, this.interval);
+  }
+
+  componentWillMount() {
+    if (this.worker) {
+      clearInterval(this.worker);
+      this.worker = null;
+    }
+  }
+
+  animate() {
+
+  }
+
   componentDidMount() {
     this.state.product = JSON.parse(localStorage.tmp);
     this.forceUpdate();
@@ -163,7 +184,8 @@ class SummaryPage extends Component {
               textAnchor="middle"
               alignmentBaseline="middle"
               x={cx2}
-              y={cy2 - 80}
+              y={cy2 - 75}
+              fontSize="0.8em"
               fill="#333">
               <tspan>전체 긍정/부정 비율</tspan>
             </text>
@@ -177,7 +199,8 @@ class SummaryPage extends Component {
               textAnchor="middle"
               alignmentBaseline="middle"
               x={cx2}
-              y={cy3 - 80}
+              y={cy3 - 75}
+              fontSize="0.8em"
               fill="#333">
               <tspan>해당 속성의 긍정/부정 비율</tspan>
             </text>
@@ -272,7 +295,14 @@ class SummaryPage extends Component {
     }
 
     return (
-      <div style={{boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)', margin: '10px 0', padding: '15px', overflow: 'hidden'}}>
+      <div
+        style={{
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
+          margin: '10px 0',
+          marginTop: '20px',
+          padding: '15px',
+          overflow: 'hidden'
+        }}>
         <div
           style={{
             margin: '-15px',
@@ -385,7 +415,15 @@ class SummaryPage extends Component {
   renderTranslator() {
     return (
       <div>
-        <h3>의견 실시간 분석기</h3>
+        <h3
+          style={{
+            fontSize: '1.5em',
+            margin: '10px 0',
+            marginTop: '30px',
+            padding: '0px',
+          }}>
+          의견 실시간 분석기
+        </h3>
         <textarea
           placeholder="리뷰를 입력해주세요."
           rows="8"
@@ -450,7 +488,7 @@ class SummaryPage extends Component {
           <Col xs={12}>
             <ReviewScroll
               attrFilter={attrFilter}
-              productId={this.context.params.productId} />
+              productId={canUseDOM ? JSON.parse(localStorage.tmp).productId : this.context.params.productId} />
           </Col>
         </Row>
       </div>
