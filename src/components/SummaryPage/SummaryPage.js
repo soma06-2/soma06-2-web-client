@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import withStyles from '../../decorators/withStyles';
 import styles from './SummaryPage.css';
 import { Row, Col } from 'react-bootstrap';
+import { RaisedButton } from 'material-ui';
 import ReviewScroll from './ReviewScroll';
 import classNames from 'classnames';
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
@@ -25,15 +26,15 @@ class SummaryPage extends Component {
     this.state = {
       activatedSector: 0,
       product: null,
+      stat1: 0,
     };
 
-    this.mouse = null;
+    this.worker = null;
+    this.fps = 60;
+    this.interval = 1000 / this.fps;
 
     this.props.data.attributes.forEach((attr, idx) => {
       this.props.data.attributes[idx].name = attr.name.split('/')[0];
-
-      attr.negative.reviews = attr.negative.reviews.splice(0, 5);
-      attr.positive.reviews = attr.positive.reviews.splice(0, 5);
     });
   }
 
@@ -47,12 +48,6 @@ class SummaryPage extends Component {
       return;
     }
 
-    const selfNode = ReactDOM.findDOMNode(this);
-
-    this.mouse = {
-      offsetX: event.clientX - selfNode.offsetLeft,
-      offsetY: event.clientY - selfNode.offsetTop,
-    };
     this.forceUpdate();
   }
 
@@ -62,16 +57,7 @@ class SummaryPage extends Component {
         return;
       }
 
-      this.forceUpdate();
-
       this.state.activatedSector = idx;
-
-      const selfNode = ReactDOM.findDOMNode(this);
-
-      this.mouse = {
-        offsetX: event.clientX - selfNode.offsetLeft,
-        offsetY: event.clientY - selfNode.offsetTop,
-      };
 
       this.forceUpdate();
     }
@@ -83,8 +69,6 @@ class SummaryPage extends Component {
         return;
       }
 
-      this.mouse = null;
-
       this.forceUpdate();
     }
   }
@@ -93,44 +77,10 @@ class SummaryPage extends Component {
     return this.props.data.attributes[this.state.activatedSector];
   }
 
-  renderTooltip() {
-    if (!canUseDOM) {
-      return '';
-    }
-
-    if (!this.mouse) {
-      return '';
-    }
-
-    const attr = this.getActivatedSector();
-
-    if (!attr || !this.mouse) {
-      return '';
-    }
-
-    return (
-      <div style={{
-          position: 'absolute',
-          top: (this.mouse.offsetY + 20) + 'px',
-          left: (this.mouse.offsetX + 20) + 'px',
-          width: '100px',
-          height: '15px',
-          background: '#F44336',
-          boxShadow: '0 0 4px rgba(0, 0, 0, 0.8)'
-        }}>
-        <div style={{
-            width: `${attr.positive.stat * 100}px`,
-            height: 'inherit',
-            background: '#8BC34A',
-            transition: '0.25s',
-          }}/>
-      </div>
-    );
-  }
-
   renderGraph() {
-    const width = 500, height = 480;
-    const cx = width / 2, cy = height / 2;
+    const width = 600, height = 480;
+    const cx = width / 2 - 100, cy = height / 2;
+    const cx2 = width / 2 + 200, cy2 = height / 2 - 100, cy3 = height / 2 + 100;
 
     const radius = 130;
 
@@ -160,6 +110,44 @@ class SummaryPage extends Component {
 
     const total = 1;
 
+    const d2 = (function (self) {
+      const radius = 60;
+      const valuePercentage = 0.7 / total;
+      const longArc = (valuePercentage <= 0.5) ? 0 : 1;
+      const radSegment = valuePercentage * mPI;
+      const nextX = cos(radSegment) * radius;
+      const nextY = sin(radSegment) * radius;
+
+      return [
+        `M${cx2},${cy2}`,
+        `L${cx2 + nextX},${cy2 + nextY}`,
+        `A${radius},${radius}`,
+        '0',
+        `${longArc},0`,
+        `${cx2 + radius},${cy2}`,
+        'z',
+      ].join(' ');
+    })(this);
+
+    const d3 = (function (self) {
+      const radius = 60;
+      const valuePercentage = self.getActivatedSector().positive.stat / total;
+      const longArc = (valuePercentage <= 0.5) ? 0 : 1;
+      const radSegment = valuePercentage * mPI;
+      const nextX = cos(radSegment) * radius;
+      const nextY = sin(radSegment) * radius;
+
+      return [
+        `M${cx2},${cy3}`,
+        `L${cx2 + nextX},${cy3 + nextY}`,
+        `A${radius},${radius}`,
+        '0',
+        `${longArc},0`,
+        `${cx2 + radius},${cy3}`,
+        'z',
+      ].join(' ');
+    })(this);
+
     return (
       <div
         className="graph"
@@ -169,13 +157,36 @@ class SummaryPage extends Component {
         }}
         >
         <svg width={width} height={height}>
-          <defs>
-            <filter id="f2" x="0" y="0" width="200%" height="200%">
-              <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
-              <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
-              <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-            </filter>
-          </defs>
+          <g>
+            <circle cx={cx2} cy={cy2} r={60} fill="#B388FF" />
+            <text
+              textAnchor="middle"
+              alignmentBaseline="middle"
+              x={cx2}
+              y={cy2 - 80}
+              fill="#333">
+              <tspan>전체 긍정/부정 비율</tspan>
+            </text>
+            <path
+              d={d2}
+              fill="#00BFA5"
+              />
+            <circle cx={cx2} cy={cy2} r={25} fill="#fff" />
+            <circle cx={cx2} cy={cy3} r={60} fill="#B388FF" />
+            <text
+              textAnchor="middle"
+              alignmentBaseline="middle"
+              x={cx2}
+              y={cy3 - 80}
+              fill="#333">
+              <tspan>해당 속성의 긍정/부정 비율</tspan>
+            </text>
+            <path
+              d={d3}
+              fill="#00BFA5"
+              />
+            <circle cx={cx2} cy={cy3} r={25} fill="#fff" />
+          </g>
           <g>
             <circle cx={cx} cy={cy} r={radius} fill="#eee" />
             {this.props.data.attributes.map((attr, idx) => {
@@ -225,7 +236,6 @@ class SummaryPage extends Component {
                   ref="chartPie">
                   <path
                     d={d}
-                    filter="url(#f2)"
                     fill={this.state.activatedSector === idx ? accentChartColors[idx % chartColors.length] : chartColors[idx % chartColors.length]}
                     />
                   <text
@@ -250,7 +260,6 @@ class SummaryPage extends Component {
             })}
           </g>
         </svg>
-        {this.renderTooltip()}
       </div>
     );
   }
@@ -263,7 +272,7 @@ class SummaryPage extends Component {
     }
 
     return (
-      <div style={{boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)', margin: '10px 0', padding: '15px', overflow: 'hidden'}}>
+      <div style={{boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)', margin: '10px 0', padding: '15px', overflow: 'hidden'}}>
         <div
           style={{
             margin: '-15px',
@@ -373,9 +382,31 @@ class SummaryPage extends Component {
     );
   }
 
-  renderProductStat() {
+  renderTranslator() {
     return (
-      <h3>전체 긍정/부정 비율</h3>
+      <div>
+        <h3>의견 실시간 분석기</h3>
+        <textarea
+          placeholder="리뷰를 입력해주세요."
+          rows="8"
+          style={{
+            width: '100%',
+            border: 'none',
+            borderRadius: '1px',
+            boxShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
+            padding: '10px',
+            fontSize: '0.8em',
+          }}>
+        </textarea>
+        <div
+          style={{
+            textAlign: 'right',
+          }}>
+          <RaisedButton
+            primary={true}
+            label="분석" />
+        </div>
+      </div>
     );
   }
 
@@ -412,7 +443,7 @@ class SummaryPage extends Component {
           </Col>
           <Col xs={4}>
             {this.renderProduct()}
-            {this.renderProductStat()}
+            {this.renderTranslator()}
           </Col>
         </Row>
         <Row>

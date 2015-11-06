@@ -47,8 +47,6 @@ export default class ReviewScroll extends Component {
     http
       .find(`products/${this.props.productId}/reviews?skip=${this.skip}&limit=${this.limit}&where=${JSON.stringify(condition)}`)
       .then(res => {
-        console.log(res);
-
         if (Array.isArray(res) && res.length) {
           this.skip += this.limit;
         }
@@ -70,13 +68,15 @@ export default class ReviewScroll extends Component {
       return;
     }
 
+    const refs = this.refs;
+
     let selfNode = ReactDOM.findDOMNode(this);
     let doc = document.documentElement;
     let top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
     let bottom = selfNode.offsetHeight + selfNode.offsetTop;
     let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    this.isOver = top - windowHeight > this.refs.reviewList.offsetTop - 56;
+    this.isOver = windowHeight - top - 64 < refs.reviewList.offsetTop;
 
     if (bottom - top - windowHeight < 200) {
       this.loadProducts();
@@ -148,6 +148,7 @@ export default class ReviewScroll extends Component {
             fixed: this.isOver,
           })}>
           <div
+            ref="toolbarGroup"
             className={classNames({
               wrap: this.isOver,
             })}>

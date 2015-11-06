@@ -63,7 +63,7 @@ const router = new Router(on => {
 
   on('*', async (state) => {
     const content = await http.get(`/api/content?path=${state.path}`);
-    return <ContentPage {...content} />;
+    return content && <ContentPage {...content} />;
   });
 
   on('error', (state, error) => state.statusCode === 404 ?

@@ -118,7 +118,7 @@
   }
 
   polyline {
-  	opacity: .3;
+  	opacity: 0;
   	stroke: black;
   	stroke-width: 2px;
   	fill: none;
