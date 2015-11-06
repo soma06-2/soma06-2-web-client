@@ -13,13 +13,13 @@ class NotFoundPage extends Component {
   };
 
   render() {
-    const title = 'Page Not Found';
+    const title = '페이지를 못찾았습니다.';
     this.context.onSetTitle(title);
     this.context.onPageNotFound();
     return (
       <div>
         <h1>{title}</h1>
-        <p>Sorry, but the page you were trying to view does not exist.</p>
+        <p>찾으시려는 페이지가 어디에 있는지 잘 모르겠네요.</p>
       </div>
     );
   }
