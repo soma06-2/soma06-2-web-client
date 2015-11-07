@@ -30,8 +30,9 @@ class SummaryPage extends Component {
     };
 
     this.worker = null;
-    this.fps = 60;
+    this.fps = 30;
     this.interval = 1000 / this.fps;
+    this.total = 1;
 
     this.props.data.attributes.forEach((attr, idx) => {
       this.props.data.attributes[idx].name = attr.name.split('/')[0];
@@ -43,12 +44,10 @@ class SummaryPage extends Component {
       return;
     }
 
-    this.worker = setInterval(() => {
-      this.animate();
-    }, this.interval);
+    this.worker = setInterval(this.animate.bind(this), this.interval);
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     if (this.worker) {
       clearInterval(this.worker);
       this.worker = null;
@@ -56,7 +55,38 @@ class SummaryPage extends Component {
   }
 
   animate() {
+    const dest = this.getActivatedSector().positive.stat / this.total;
 
+    const d3 = (function (self) {
+      const width = 600, height = 480;
+      const cx2 = width / 2 + 200, cy3 = height / 2 + 100;
+      const radius = 60;
+      const cos = Math.cos, sin = Math.sin;
+      const mPI = Math.PI * 2;
+      const valuePercentage = self.state.stat1 / 1;
+      const longArc = (valuePercentage <= 0.5) ? 0 : 1;
+      const radSegment = valuePercentage * mPI;
+      const nextX = cos(radSegment) * radius;
+      const nextY = sin(radSegment) * radius;
+
+      return [
+        `M${cx2},${cy3}`,
+        `L${cx2 + nextX},${cy3 + nextY}`,
+        `A${radius},${radius}`,
+        '0',
+        `${longArc},0`,
+        `${cx2 + radius},${cy3}`,
+        'z',
+      ].join(' ');
+    })(this);
+
+    this.refs.attrStat.setAttribute('d', d3);
+
+    this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
+    //
+    // console.log(this.state.stat1);
+    //
+    // this.forceUpdate();
   }
 
   componentDidMount() {
@@ -150,25 +180,6 @@ class SummaryPage extends Component {
       ].join(' ');
     })(this);
 
-    const d3 = (function (self) {
-      const radius = 60;
-      const valuePercentage = self.getActivatedSector().positive.stat / total;
-      const longArc = (valuePercentage <= 0.5) ? 0 : 1;
-      const radSegment = valuePercentage * mPI;
-      const nextX = cos(radSegment) * radius;
-      const nextY = sin(radSegment) * radius;
-
-      return [
-        `M${cx2},${cy3}`,
-        `L${cx2 + nextX},${cy3 + nextY}`,
-        `A${radius},${radius}`,
-        '0',
-        `${longArc},0`,
-        `${cx2 + radius},${cy3}`,
-        'z',
-      ].join(' ');
-    })(this);
-
     return (
       <div
         className="graph"
@@ -205,8 +216,8 @@ class SummaryPage extends Component {
               <tspan>해당 속성의 긍정/부정 비율</tspan>
             </text>
             <path
-              d={d3}
               fill="#00BFA5"
+              ref="attrStat"
               />
             <circle cx={cx2} cy={cy3} r={25} fill="#fff" />
           </g>
