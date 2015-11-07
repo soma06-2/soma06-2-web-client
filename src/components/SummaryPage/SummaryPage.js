@@ -189,6 +189,16 @@ class SummaryPage extends Component {
         }}
         >
         <svg width={width} height={height}>
+          <defs
+            dangerouslySetInnerHTML={{
+              __html: [
+                '<filter id="f1" x="0" y="0" width="200%" height="200%">',
+                `<feOffset result="offOut" in="SourceGraphic" dx="0" dy="0" />`,
+                `<feGaussianBlur result="blurOut" in="offOut" stdDeviation="4" />`,
+                `<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />`,
+                `</filter>`,
+              ].join('')
+            }} />
           <g>
             <circle cx={cx2} cy={cy2} r={60} fill="#B388FF" />
             <text
@@ -202,6 +212,9 @@ class SummaryPage extends Component {
             </text>
             <path
               d={d2}
+              style={{
+                filter: 'url(#f1)',
+              }}
               fill="#00BFA5"
               />
             <circle cx={cx2} cy={cy2} r={25} fill="#fff" />
@@ -217,6 +230,9 @@ class SummaryPage extends Component {
             </text>
             <path
               fill="#00BFA5"
+              style={{
+                filter: 'url(#f1)',
+              }}
               ref="attrStat"
               />
             <circle cx={cx2} cy={cy3} r={25} fill="#fff" />
@@ -270,6 +286,9 @@ class SummaryPage extends Component {
                   ref="chartPie">
                   <path
                     d={d}
+                    style={{
+                      filter: 'url(#f1)',
+                    }}
                     fill={this.state.activatedSector === idx ? accentChartColors[idx % chartColors.length] : chartColors[idx % chartColors.length]}
                     />
                   <text
