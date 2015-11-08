@@ -36,7 +36,7 @@ export default class ReviewScroll extends Component {
     this.eventHolder = null;
     this.isOver = false;
     this.skip = 0;
-    this.limit = 20;
+    this.limit = 40;
   }
 
   loadProducts() {
@@ -76,7 +76,7 @@ export default class ReviewScroll extends Component {
     let bottom = selfNode.offsetHeight + selfNode.offsetTop;
     let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    this.isOver = windowHeight - top - 64 < refs.reviewList.offsetTop;
+    this.isOver = windowHeight - top + 66 < refs.reviewList.offsetTop;
 
     if (bottom - top - windowHeight < 200) {
       this.loadProducts();
@@ -120,14 +120,6 @@ export default class ReviewScroll extends Component {
   }
 
   render() {
-
-    const filterOptions = [
-      { payload: '1', text: '모든 속성 리뷰' },
-      { payload: '2', text: '속성 1' },
-      { payload: '3', text: '속성 2' },
-      { payload: '4', text: '속성 3' },
-      { payload: '5', text: '속성 4' },
-    ];
 
     const iconMenuItems = [
       { payload: '1', text: '모든 감정 리뷰' },

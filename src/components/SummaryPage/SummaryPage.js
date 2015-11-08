@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import withStyles from '../../decorators/withStyles';
 import styles from './SummaryPage.css';
 import { Row, Col } from 'react-bootstrap';
-import { RaisedButton } from 'material-ui';
+import { RaisedButton, FlatButton, Dialog } from 'material-ui';
 import ReviewScroll from './ReviewScroll';
 import classNames from 'classnames';
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
@@ -55,7 +55,12 @@ class SummaryPage extends Component {
   }
 
   animate() {
-    const dest = this.getActivatedSector().positive.stat / this.total;
+    const stat = this.getActivatedSector().positive.stat;
+    const dest = (stat ? stat : 0) / this.total;
+
+    this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
+
+    console.log(dest, this.state.stat1);
 
     const d3 = (function (self) {
       const width = 600, height = 480;
@@ -81,12 +86,6 @@ class SummaryPage extends Component {
     })(this);
 
     this.refs.attrStat.setAttribute('d', d3);
-
-    this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
-    //
-    // console.log(this.state.stat1);
-    //
-    // this.forceUpdate();
   }
 
   componentDidMount() {
@@ -193,7 +192,7 @@ class SummaryPage extends Component {
             dangerouslySetInnerHTML={{
               __html: [
                 '<filter id="f1" x="0" y="0" width="200%" height="200%">',
-                `<feOffset result="offOut" in="SourceGraphic" dx="0" dy="0" />`,
+                `<feOffset result="offOut" in="SourceGraphic" dx="0" dy="3" />`,
                 `<feGaussianBlur result="blurOut" in="offOut" stdDeviation="4" />`,
                 `<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />`,
                 `</filter>`,
@@ -213,7 +212,6 @@ class SummaryPage extends Component {
             <path
               d={d2}
               style={{
-                filter: 'url(#f1)',
               }}
               fill="#00BFA5"
               />
@@ -231,14 +229,12 @@ class SummaryPage extends Component {
             <path
               fill="#00BFA5"
               style={{
-                filter: 'url(#f1)',
               }}
               ref="attrStat"
               />
             <circle cx={cx2} cy={cy3} r={25} fill="#fff" />
           </g>
           <g>
-            <circle cx={cx} cy={cy} r={radius} fill="#eee" />
             {this.props.data.attributes.map((attr, idx) => {
               const valuePercentage = attr.rate / total;
               const longArc = (valuePercentage <= 0.5) ? 0 : 1;
@@ -268,7 +264,7 @@ class SummaryPage extends Component {
               lastX = nextX;
               lastY = nextY;
 
-              const scale = (this.state.activatedSector === idx ? 1.1 : 1);
+              const scale = (this.state.activatedSector === idx ? 1.1 : '0.9, 0.9');
               const transform = `translate(${cx}px,${cy}px) scale(${scale})`;
 
               return (
@@ -287,7 +283,6 @@ class SummaryPage extends Component {
                   <path
                     d={d}
                     style={{
-                      filter: 'url(#f1)',
                     }}
                     fill={this.state.activatedSector === idx ? accentChartColors[idx % chartColors.length] : chartColors[idx % chartColors.length]}
                     />
@@ -311,6 +306,7 @@ class SummaryPage extends Component {
                 </g>
               );
             })}
+            <circle cx={cx} cy={cy} r={radius - 80} fill="#fff" />
           </g>
         </svg>
       </div>
@@ -381,7 +377,6 @@ class SummaryPage extends Component {
                     margin: '1px 0px',
                     backgroundColor: '#00BFA5',
                     borderRadius: '1px',
-                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
                     color: '#fff',
                     padding: '10px',
                   }}
@@ -428,7 +423,6 @@ class SummaryPage extends Component {
                   margin: '1px 0px',
                   backgroundColor: '#B388FF',
                   borderRadius: '1px',
-                  boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)',
                   color: '#fff',
                   padding: '10px',
                 }}
@@ -472,13 +466,29 @@ class SummaryPage extends Component {
           }}>
           <RaisedButton
             primary={true}
+            onClick={this.handleClick.bind(this)}
             label="분석" />
         </div>
       </div>
     );
   }
 
+  handleClick() {
+    this.refs.reviewAnalyzer.show();
+  }
+
+  _handleCustomDialogCancel() {
+    this.refs.reviewAnalyzer.dismiss();
+  }
+
   render() {
+    const dialogCustomActions = [
+      <FlatButton
+        label="닫기"
+        secondary={true}
+        onTouchTap={this._handleCustomDialogCancel.bind(this)} />,
+    ];
+
     const title = `상품 요약`;
     this.context.onSetTitle(title);
 
@@ -521,6 +531,21 @@ class SummaryPage extends Component {
               productId={canUseDOM ? JSON.parse(localStorage.tmp).productId : this.context.params.productId} />
           </Col>
         </Row>
+        <Dialog
+          title="리뷰 분석"
+          ref="reviewAnalyzer"
+          actions={dialogCustomActions}
+          autoDetectWindowHeight={true}
+          autoScrollBodyContent={true}>
+          <div
+            style={{
+              height: '400px',
+              color: '#000',
+              position: 'relative',
+            }}>
+            분석된 리뷰 결과
+            </div>
+        </Dialog>
       </div>
     );
   }

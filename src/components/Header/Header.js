@@ -231,7 +231,6 @@ class Header extends Component {
         <Dialog
           title="속성 검색"
           ref="attrSearch"
-          key="attrSearchDialog"
           actions={dialogCustomActions}
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}>

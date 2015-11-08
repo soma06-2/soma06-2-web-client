@@ -39,6 +39,9 @@ class SearchResultItem extends Component {
         <CardTitle
           title={data.title}
           subtitle={data.lprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' KRW'} />
+        <CardText>
+          추천된 이유 ex) 가격 속성이 많이 언급되었음
+        </CardText>
       </Card>
     );
   }

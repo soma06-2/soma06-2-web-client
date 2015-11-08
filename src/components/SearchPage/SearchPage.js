@@ -33,6 +33,29 @@ class SearchPage extends Component {
     this.eventHolder = null;
   }
 
+  addProduct(product) {
+    this.state.products.push(product);
+  }
+
+  initProducts() {
+    this.state.products.length = 0;
+    this.setDefaultPagination();
+  }
+
+  setDefaultPagination() {
+    this.skip = 31;
+  }
+
+  componentWillMount() {
+    this.props.products.forEach(product => this.addProduct(product));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.initProducts();
+
+    nextProps.products.forEach(product => this.addProduct(product));
+  }
+
   componentDidMount() {
     this.eventHolder = this.handleScroll.bind(this);
     window.addEventListener('scroll', this.eventHolder);
@@ -55,7 +78,7 @@ class SearchPage extends Component {
   }
 
   renderCards() {
-    const products = [...this.props.products, ...this.state.products];
+    const products = this.state.products;
 
     return products.map((item, idx) => {
       return (
@@ -65,9 +88,11 @@ class SearchPage extends Component {
           md={6}
           sm={6}
           xs={12}>
-          <SearchResultItem
-            data={item}
-            />
+          <div className="animation">
+            <SearchResultItem
+              data={item}
+              />
+          </div>
         </Col>
       );
     });
@@ -105,7 +130,7 @@ class SearchPage extends Component {
 
     return (
       <div
-        className="wrap">
+        className="wrap SearchPage">
         <Row>
           <div
             style={{

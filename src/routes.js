@@ -39,13 +39,13 @@ const router = new Router(on => {
 
   use('/register', async () => <RegisterPage />);
 
-  use('/search/', async () => {
-    return <SearchPage products={[]} />;
-  });
-
   use('/search/:search', async (state) => {
     const content = await http.get(`/v1/naverProducts/${encodeURIComponent(state.params.search)}`);
     return content && <SearchPage products={content} search={state.params.search} />;
+  });
+
+  use('/search/', async () => {
+    return <SearchPage products={[]} />;
   });
 
   use('/summary/product/:productId', async (state) => {
