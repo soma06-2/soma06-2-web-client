@@ -19,7 +19,7 @@
     "front-matter": "2.0.0",
     "history": "1.12.5",
     "jade": "1.11.0",
-    "material-ui": "^0.13.1",
+    "material-ui": "^0.13.2",
     "normalize.css": "3.0.3",
     "react": "^0.14.2",
     "react-addons-create-fragment": "^0.14.0",
