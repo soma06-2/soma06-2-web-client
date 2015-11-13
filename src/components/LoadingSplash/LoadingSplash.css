@@ -1,0 +1,22 @@
+@import '../variables.css';
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  99% {
+    opacity: 0;
+  }
+
+  100% {
+    width: 0px; height: 0px;
+    overflow: hidden;
+    display: none;
+  }
+}
+
+.loadingSplashLoaded {
+  animation: fadeOut 1s 1;
+  animation-fill-mode: forwards;
+}
