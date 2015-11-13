@@ -5,6 +5,7 @@ import styles from './App.css';
 import withContext from '../../decorators/withContext';
 import withStyles from '../../decorators/withStyles';
 import Header from '../Header';
+import LoadingSplash from '../LoadingSplash';
 
 @withContext
 @withStyles(styles)
@@ -19,6 +20,7 @@ class App extends Component {
 
     return !this.props.error ? (
       <div>
+        <LoadingSplash />
         <Header />
         {this.props.children}
       </div>

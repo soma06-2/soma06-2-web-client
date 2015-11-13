@@ -31,6 +31,7 @@ export default class ReviewScroll extends Component {
 
     this.state = {
       reviews: [],
+      isRequesting: false,
     };
 
     this.eventHolder = null;
@@ -40,9 +41,17 @@ export default class ReviewScroll extends Component {
   }
 
   loadProducts() {
+    if (this.state.isRequesting) {
+      return;
+    }
+
     const condition = {
       attributes: [],
     };
+
+    this.state.isRequesting = true;
+
+    this.forceUpdate();
 
     http
       .find(`products/${this.props.productId}/reviews?skip=${this.skip}&limit=${this.limit}&where=${JSON.stringify(condition)}`)
@@ -55,6 +64,8 @@ export default class ReviewScroll extends Component {
           review.content = translateStat(review.content);
           this.state.reviews.push(review.content);
         });
+
+        this.state.isRequesting = false;
 
         this.forceUpdate();
       })

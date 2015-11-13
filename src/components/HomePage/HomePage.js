@@ -9,7 +9,13 @@ import withStyles from '../../decorators/withStyles';
 @withStyles(styles)
 class HomePage extends Component {
 
+  static contextTypes = {
+    onSetTitle: PropTypes.func.isRequired,
+  };
+
   render() {
+    this.context.onSetTitle('리뷰 요약 시스템');
+
     return (
       <div>
         <div className="wrap HomePage-text">

@@ -40,6 +40,7 @@ class SummaryPage extends Component {
   }
 
   componentWillMount() {
+    console.log(this.props.data.attributes);
     if (!canUseDOM) {
       return;
     }
@@ -56,11 +57,9 @@ class SummaryPage extends Component {
 
   animate() {
     const stat = this.getActivatedSector().positive.stat;
-    const dest = (stat ? stat : 0) / this.total;
+    const dest = stat ? stat / this.total : 0;
 
     this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
-
-    console.log(dest, this.state.stat1);
 
     const d3 = (function (self) {
       const width = 600, height = 480;
@@ -183,10 +182,9 @@ class SummaryPage extends Component {
       <div
         className="graph"
         style={{
-          margin: '0 auto',
-          width: `${width}px`
-        }}
-        >
+          margin: '0',
+          width: `${width}px`,
+        }}>
         <svg width={width} height={height}>
           <defs
             dangerouslySetInnerHTML={{
@@ -504,7 +502,8 @@ class SummaryPage extends Component {
     return (
       <div className="wrap SummaryPage">
         <Row>
-          <Col xs={8}>
+          <Col
+            xs={8}>
             {this.renderGraph()}
             <Row
               style={{
