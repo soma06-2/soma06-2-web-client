@@ -162,7 +162,7 @@ export default class ReviewScroll extends Component {
     const value = event.target.value;
     const key = event.dispatchMarker;
 
-    if (value) {
+    if (!this.selectedAttrs[key]) {
       this.selectedAttrs[key] = value;
     }
     else {

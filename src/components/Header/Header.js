@@ -63,6 +63,12 @@ class Header extends Component {
   componentDidMount() {
   }
 
+  handleKeyDown(event) {
+    if (event.key == 'Enter') {
+      event.preventDefault();
+    }
+  }
+
   handleFocus(event) {
     this.state.hasFocus = true;
 
@@ -234,7 +240,7 @@ class Header extends Component {
     const value = event.target.value;
     const key = event.dispatchMarker;
 
-    if (value) {
+    if (!this.selectedAttrs[key]) {
       this.selectedAttrs[key] = value;
     }
     else {
@@ -345,6 +351,7 @@ class Header extends Component {
                 value={this.word}
                 onFocus={this.handleFocus.bind(this)}
                 onBlur={this.handleBlur.bind(this)}
+                onKeyDown={this.handleKeyDown.bind(this)}
                 onChange={this.handleChange.bind(this)} />
               {this.renderInit()}
             </form>
