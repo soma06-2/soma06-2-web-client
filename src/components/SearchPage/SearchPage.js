@@ -28,6 +28,7 @@ class SearchPage extends Component {
 
     this.state = {
       products: [],
+      isRequesting: false,
     };
 
     this.eventHolder = null;
@@ -111,12 +112,22 @@ class SearchPage extends Component {
   }
 
   handleInfiniteLoad() {
+    if (this.state.isRequesting) {
+      return;
+    }
+
+    this.state.isRequesting = true;
+    this.forceUpdate();
+
     http
       .get(`/v1/naverProducts/${encodeURIComponent(this.props.search)}?skip=${this.skip}&limit=${this.limit}`)
       .then((products) => {
         this.state.products = [...this.state.products, ...products];
-        this.forceUpdate();
+
         this.skip += this.limit;
+        this.state.isRequesting = false;
+
+        this.forceUpdate();
       });
   }
 

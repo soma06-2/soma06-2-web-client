@@ -2,5 +2,5 @@
 
 export default {
   googleAnalyticsId: 'UA-XXXXX-X',
-  apiHost: 'http://soma.lucent.me:5555/v1/',
+  apiHost: 'http://1.lucent.me:5000/v1/',
 };

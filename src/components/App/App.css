@@ -2,6 +2,51 @@
 @import '../../../node_modules/spinkit/css/spinkit.css';
 @import '../variables.css';
 
+@keyframes loadingAnimation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scalingAnimation {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(2);
+  }
+}
+
+#loading {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  z-index: 100000000;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-align: center;
+  padding-top: 200px;
+
+  &.activated {
+    display: block;
+    animation: loadingAnimation var(--animation-time);
+  }
+
+  > div {
+    animation: scalingAnimation var(--animation-time);
+    animation-fill-mode: forwards;
+
+    > div {
+      background: #fff;
+    }
+  }
+}
+
 @keyframes pageLoaded {
   from {
     opacity: 0;

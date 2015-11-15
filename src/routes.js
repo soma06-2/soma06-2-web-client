@@ -39,6 +39,18 @@ const router = new Router(on => {
 
   use('/register', async () => <RegisterPage />);
 
+  use('/recommendation/:categoryId', async (state) => {
+    const query = state.query;
+
+    const condition = {
+      category: state.params.categoryId,
+      attributes: query.attributes.split(','),
+    };
+
+    const content = await http.find(`recommendations?where=${JSON.stringify(condition)}`);
+    return content && <SearchPage products={content} />;
+  });
+
   use('/search/:search', async (state) => {
     const content = await http.get(`/v1/naverProducts/${encodeURIComponent(state.params.search)}`);
     return content && <SearchPage products={content} search={state.params.search} />;

@@ -11,8 +11,10 @@
 
   100% {
     width: 0px; height: 0px;
+    top: static; left: static; right: static; bottom: static;
     overflow: hidden;
     display: none;
+    visibility: hidden;
   }
 }
 

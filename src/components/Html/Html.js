@@ -1,5 +1,4 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
 import React, { Component, PropTypes } from 'react';
 import { googleAnalyticsId } from '../../config';
 
@@ -41,6 +40,20 @@ class Html extends Component {
         <style id="css" dangerouslySetInnerHTML={{__html: this.props.css}} />
       </head>
       <body>
+        <div id="loading">
+          <div className="sk-cube-grid">
+            <div className="sk-cube sk-cube1"></div>
+            <div className="sk-cube sk-cube2"></div>
+            <div className="sk-cube sk-cube3"></div>
+            <div className="sk-cube sk-cube4"></div>
+            <div className="sk-cube sk-cube5"></div>
+            <div className="sk-cube sk-cube6"></div>
+            <div className="sk-cube sk-cube7"></div>
+            <div className="sk-cube sk-cube8"></div>
+            <div className="sk-cube sk-cube9"></div>
+          </div>
+          요청을 처리하고 있습니다.
+        </div>
         <div id="app" dangerouslySetInnerHTML={{__html: this.props.body}} />
         <script src="/app.js"></script>
         <script dangerouslySetInnerHTML={this.trackingCode()} />

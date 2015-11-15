@@ -38,9 +38,15 @@ class SearchResultItem extends Component {
         </CardMedia>
         <CardTitle
           title={data.title}
-          subtitle={data.lprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' KRW'} />
+          subtitle={data.lprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
         <CardText>
-          추천된 이유 ex) 가격 속성이 많이 언급되었음
+          {data.reasons && data.reasons.map((reason, idx) => {
+            return (
+              <p key={idx}>
+                {reason}
+              </p>
+            );
+          })}
         </CardText>
       </Card>
     );

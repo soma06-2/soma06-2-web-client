@@ -30,6 +30,7 @@
     "react-bootstrap": "^0.27.2",
     "react-dom": "0.14.0",
     "react-infinite": "^0.5.8",
+    "react-ink": "^5.0.2",
     "react-measure": "^0.2.0",
     "react-routing": "0.0.5",
     "react-svg-piechart": "^1.1.0",

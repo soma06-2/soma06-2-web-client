@@ -16,7 +16,7 @@ class ErrorPage extends Component {
     const title = 'Error';
     this.context.onSetTitle(title);
     return (
-      <div>
+      <div className="Error-container">
         <h1>이런!</h1>
         <p>해당 상품에 대해서 분석이 불가능합니다.</p>
       </div>

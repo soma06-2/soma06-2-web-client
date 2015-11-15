@@ -50,6 +50,25 @@ const HttpClient = {
       });
   }),
 
+  post: (path, params) => new Promise((resolve, reject) => {
+    request
+      .post(apiHost + path)
+      .type('form')
+      .send(params)
+      .accept('application/json')
+      .end((err, res) => {
+        if (err) {
+          if (err.status === 404) {
+            resolve(null);
+          } else {
+            reject(err);
+          }
+        } else {
+          resolve(JSON.parse(res.text));
+        }
+      });
+  }),
+
 };
 
 export default HttpClient;

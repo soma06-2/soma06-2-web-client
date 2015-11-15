@@ -1,10 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { Checkbox } from 'material-ui';
+import withStyles from '../../decorators/withStyles';
+import styles from './CardCheckbox.css';
+import Ink from 'react-ink';
 
-export default class CardCheckbox extends Component {
+@withStyles(styles)
+class CardCheckbox extends Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    defaultChecked: PropTypes.boolean,
     onCheck: PropTypes.func,
+  };
+
+  static propDefaults = {
+    defaultChecked: false,
   };
 
   constructor() {
@@ -19,8 +29,6 @@ export default class CardCheckbox extends Component {
     if (this.props.onCheck) {
       this.props.onCheck(event);
     }
-
-    console.log(this.refs.checkbox.value);
   }
 
   handleMouseEnter(event) {
@@ -33,22 +41,20 @@ export default class CardCheckbox extends Component {
 
   render() {
     return (
-      <div style={style.origin} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
-        <Checkbox ref="checkbox" label={this.props.label} onCheck={this.handleCheck.bind(this)} />
+      <div
+        className="CardCheckbox"
+        onMouseEnter={this.handleMouseEnter.bind(this)}
+        onMouseLeave={this.handleMouseLeave.bind(this)}>
+        <Checkbox
+          ref="checkbox"
+          label={this.props.label}
+          value={this.props.value}
+          defaultChecked={this.props.defaultChecked}
+          onCheck={this.handleCheck.bind(this)} />
+        <Ink />
       </div>
     );
   }
 };
 
-var style = {
-  origin: {
-    margin: '3px',
-    padding: '10px 10px',
-    paddingBottom: '5px',
-    background: '#eee',
-  },
-
-  acitvated: {
-
-  },
-};
+export default CardCheckbox;

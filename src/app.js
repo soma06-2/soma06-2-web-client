@@ -11,6 +11,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 let cssContainer = document.getElementById('css');
+const loadingContainer = document.getElementById('loading');
 const appContainer = document.getElementById('app');
 const context = {
   onSetTitle: value => document.title = value,
@@ -31,8 +32,12 @@ const context = {
 };
 
 function render(state) {
+  loadingContainer.className = 'activated';
+
   Router.dispatch(state, (newState, component) => {
     ReactDOM.render(component, appContainer, () => {
+      loadingContainer.className = '';
+
       // Restore the scroll position if it was saved into the state
       if (state.scrollY !== undefined) {
         window.scrollTo(state.scrollX, state.scrollY);

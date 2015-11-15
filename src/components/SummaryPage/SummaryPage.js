@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import withStyles from '../../decorators/withStyles';
 import styles from './SummaryPage.css';
 import { Row, Col } from 'react-bootstrap';
-import { RaisedButton, FlatButton, Dialog } from 'material-ui';
+import { RaisedButton, FlatButton, Dialog, Tabs, Tab } from 'material-ui';
 import ReviewScroll from './ReviewScroll';
 import classNames from 'classnames';
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
+import http from '../../core/HttpClient';
 
 @withStyles(styles)
 class SummaryPage extends Component {
@@ -27,6 +28,8 @@ class SummaryPage extends Component {
       activatedSector: 0,
       product: null,
       stat1: 0,
+      evaluated: {},
+      dialog: false,
     };
 
     this.worker = null;
@@ -379,9 +382,12 @@ class SummaryPage extends Component {
                     padding: '10px',
                   }}
                   className="card">
-                  <span style={{
-                    display: 'inline-block',
-                  }}>{item}</span>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                    }}>
+                    {item}
+                  </span>
                 </li>
               );
             })}
@@ -449,6 +455,7 @@ class SummaryPage extends Component {
         <textarea
           placeholder="리뷰를 입력해주세요."
           rows="8"
+          ref="reviewInput"
           style={{
             width: '100%',
             border: 'none',
@@ -472,11 +479,28 @@ class SummaryPage extends Component {
   }
 
   handleClick() {
-    this.refs.reviewAnalyzer.show();
+    http
+      .post(`product/${this.context.params.productId}/evalution`, {
+        review: this.refs.reviewInput.value
+      })
+      .then(res => {
+        this.state.evaluated = res;
+        this.state.dialog = true;
+        this.forceUpdate();
+      })
+      .catch(res => {
+        console.error(res);
+      });
   }
 
   _handleCustomDialogCancel() {
-    this.refs.reviewAnalyzer.dismiss();
+    this.state.dialog = false;
+    this.forceUpdate();
+  }
+
+  _handleRequestClose() {
+    this.state.dialog = false;
+    this.forceUpdate();
   }
 
   render() {
@@ -494,8 +518,8 @@ class SummaryPage extends Component {
 
     this.props.data.attributes.forEach((attr, idx) => {
       attrFilter.push({
-        payload: idx,
         text: `${attr.name} (${attr.totalReviews})`,
+        value: attr.name,
       });
     });
 
@@ -532,7 +556,8 @@ class SummaryPage extends Component {
         </Row>
         <Dialog
           title="리뷰 분석"
-          ref="reviewAnalyzer"
+          open={this.state.dialog}
+          onRequestClose={this._handleRequestClose.bind(this)}
           actions={dialogCustomActions}
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}>
@@ -542,8 +567,39 @@ class SummaryPage extends Component {
               color: '#000',
               position: 'relative',
             }}>
-            분석된 리뷰 결과
-            </div>
+            <Tabs>
+              {this.state.evaluated.attributes && this.state.evaluated.attributes.map((attr, idx) => {
+                return (
+                  <Tab label={attr.name} key={idx}>
+                    <Row>
+                      <Col xs={6}>
+                        <h3>긍정 요소</h3>
+                        {!attr.positive.reviews.length && <p>추출된 긍정 요소가 없습니다.</p>}
+                        <ul className="list-unstyled">
+                          {attr.positive.reviews.map((review, idx2) => {
+                            return (
+                              <li key={idx2}>{review}</li>
+                            );
+                          })}
+                        </ul>
+                      </Col>
+                      <Col xs={6}>
+                        <h3>부정 요소</h3>
+                        {!attr.negative.reviews.length && <p>추출된 부정 요소가 없습니다.</p>}
+                        <ul className="list-unstyled">
+                          {attr.negative.reviews.map((review, idx2) => {
+                            return (
+                              <li key={idx2}>{review}</li>
+                            );
+                          })}
+                        </ul>
+                      </Col>
+                    </Row>
+                  </Tab>
+                );
+              })}
+            </Tabs>
+          </div>
         </Dialog>
       </div>
     );
