@@ -15,24 +15,25 @@ class LoadingSplash extends Component {
     };
   }
 
-  componentDidMount() {
+  loaded() {
     this.state.loaded = true;
     this.forceUpdate();
+  }
+
+  componentDidMount() {
+    setTimeout(this.loaded.bind(this), 500);
   }
 
   render() {
 
     return (
       <div
-        style={styles.container}
-        className={cx({
-          'loadingSplashLoaded': this.state.loaded,
-        })}>
-        <div style={styles.centerBox}>
+        style={this.state.loaded ? {display: 'none'} : styles.container}>
+        <div style={this.state.loaded ? {} : styles.centerBox}>
           <h1
-            style={styles.title}>
+            style={this.state.loaded ? {} : styles.title}>
             Review Summarizer
-            <span style={styles.subTitle}>Software Maestro 6th</span>
+            <span style={this.state.loaded ? {} : styles.subTitle}>Software Maestro 6th</span>
           </h1>
         </div>
       </div>

@@ -5,20 +5,13 @@
     opacity: 1;
   }
 
-  99% {
-    opacity: 0;
-  }
-
   100% {
-    width: 0px; height: 0px;
-    top: static; left: static; right: static; bottom: static;
-    overflow: hidden;
+    opacity: 0;
     display: none;
     visibility: hidden;
   }
 }
 
-.loadingSplashLoaded {
-  animation: fadeOut 1s 1;
-  animation-fill-mode: forwards;
+.LoadingSplash {
+  display: none;
 }

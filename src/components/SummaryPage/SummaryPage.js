@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import withStyles from '../../decorators/withStyles';
 import styles from './SummaryPage.css';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Glyphicon } from 'react-bootstrap';
 import { RaisedButton, FlatButton, Dialog, Tabs, Tab } from 'material-ui';
 import ReviewScroll from './ReviewScroll';
 import classNames from 'classnames';
@@ -62,7 +62,12 @@ class SummaryPage extends Component {
     const stat = this.getActivatedSector().positive.stat;
     const dest = stat ? stat / this.total : 0;
 
-    this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
+    if (dest) {
+      this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
+    }
+    else {
+      this.state.stat1 = this.state.stat1 / 2;
+    }
 
     const d3 = (function (self) {
       const width = 600, height = 480;
@@ -479,6 +484,9 @@ class SummaryPage extends Component {
   }
 
   handleClick() {
+    const loadingContainer = document.getElementById('loading');
+    loadingContainer.className = 'activated';
+
     http
       .post(`product/${this.context.params.productId}/evalution`, {
         review: this.refs.reviewInput.value
@@ -486,10 +494,12 @@ class SummaryPage extends Component {
       .then(res => {
         this.state.evaluated = res;
         this.state.dialog = true;
+        loadingContainer.className = '';
         this.forceUpdate();
       })
       .catch(res => {
         console.error(res);
+        loadingContainer.className = '';
       });
   }
 
@@ -578,7 +588,7 @@ class SummaryPage extends Component {
                         <ul className="list-unstyled">
                           {attr.positive.reviews.map((review, idx2) => {
                             return (
-                              <li key={idx2}>{review}</li>
+                              <li key={idx2}><Glyphicon glyph="chevron-right" /> {review}</li>
                             );
                           })}
                         </ul>
@@ -589,7 +599,7 @@ class SummaryPage extends Component {
                         <ul className="list-unstyled">
                           {attr.negative.reviews.map((review, idx2) => {
                             return (
-                              <li key={idx2}>{review}</li>
+                              <li key={idx2}><Glyphicon glyph="chevron-right" /> {review}</li>
                             );
                           })}
                         </ul>
