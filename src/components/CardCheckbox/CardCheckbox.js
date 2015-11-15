@@ -9,7 +9,7 @@ class CardCheckbox extends Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-    defaultChecked: PropTypes.boolean,
+    defaultChecked: PropTypes.bool,
     onCheck: PropTypes.func,
   };
 
