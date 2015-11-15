@@ -62,11 +62,11 @@ class SummaryPage extends Component {
     const stat = this.getActivatedSector().positive.stat;
     const dest = stat ? stat / this.total : 0;
 
-    if (dest) {
-      this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
+    if (dest === 0) {
+      this.state.stat1 *= 0.05;
     }
     else {
-      this.state.stat1 = this.state.stat1 / 2;
+      this.state.stat1 += (dest - this.state.stat1) / dest * 0.1;
     }
 
     const d3 = (function (self) {
